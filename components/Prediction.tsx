@@ -4,19 +4,20 @@ import {
   NativeSyntheticEvent,
   SafeAreaView,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 
-import { CanvasHTMLAttributes } from "react";
+import {
+  ClockIcon,
+  ExclamationCircleIcon,
+} from "react-native-heroicons/outline";
+
 import { Button } from "./Button";
 
 type PredictionProps = {
   prediction: string;
   photo: any;
   handleImageLoaded: (event: NativeSyntheticEvent<ImageLoadEventData>) => void;
-  hasMediaLibraryPermission: boolean;
-  handlePredict: () => void;
   setPhoto: (value: any) => void;
 };
 
@@ -24,8 +25,6 @@ export const Prediction = ({
   prediction,
   photo,
   handleImageLoaded,
-  hasMediaLibraryPermission,
-  handlePredict,
   setPhoto,
 }: PredictionProps) => {
   const deleteState = () => {
@@ -54,7 +53,7 @@ export const Prediction = ({
         }}
       >
         <View>
-          {prediction ? (
+          {prediction != "Cargando..." ? (
             <Text
               style={{
                 color: "#4E8098",
@@ -65,7 +64,32 @@ export const Prediction = ({
             >
               {prediction}
             </Text>
-          ) : undefined}
+          ) : (
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <ClockIcon
+                strokeWidth={3}
+                stroke={"#A31621"}
+                style={{ width: 40, height: 40, marginRight: 5 }}
+              />
+              <Text
+                style={{
+                  color: "#A31621",
+                  fontWeight: "600",
+                  fontSize: 36,
+                  lineHeight: 40,
+                }}
+              >
+                Cargando...
+              </Text>
+            </View>
+          )}
         </View>
         <View
           style={{
@@ -102,19 +126,13 @@ export const Prediction = ({
               alignItems: "center",
             }}
           >
-            {hasMediaLibraryPermission ? (
+            {prediction != "Cargando..." && (
               <Button
-                text="Predecir"
-                color="90C2E7"
-                handleFunction={handlePredict}
+                color="A31621"
+                text="Volver a tomar"
+                handleFunction={deleteState}
               ></Button>
-            ) : undefined}
-
-            <Button
-              color="A31621"
-              text="Descartar"
-              handleFunction={deleteState}
-            ></Button>
+            )}
           </View>
         </View>
       </SafeAreaView>

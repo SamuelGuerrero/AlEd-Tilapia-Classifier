@@ -3,7 +3,7 @@ import { Text, TouchableOpacity } from "react-native";
 
 type ButtonProps = {
   text: string;
-  handleFunction: (value: any) => void;
+  handleFunction?: (value: any) => void;
   color: string;
 };
 
@@ -17,7 +17,7 @@ export const Button = ({ text, handleFunction, color }: ButtonProps) => {
         alignItems: "center",
         borderRadius: 8,
         height: 48,
-        width: 112,
+        width: 200,
         shadowColor: "#171717",
         shadowOffset: { width: -2, height: 4 },
         shadowOpacity: 0.2,

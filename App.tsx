@@ -1,14 +1,4 @@
-import { StatusBar } from "expo-status-bar";
-import {
-  Button,
-  Image,
-  ImageLoadEventData,
-  NativeSyntheticEvent,
-  SafeAreaView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ImageLoadEventData, NativeSyntheticEvent, Text } from "react-native";
 import { Camera } from "expo-camera";
 import { useEffect, useRef, useState } from "react";
 import * as React from "react";
@@ -16,11 +6,12 @@ import * as React from "react";
 import * as tf from "@tensorflow/tfjs";
 import { requestCameraPermissionsAsync } from "expo-image-picker";
 import { bundleResourceIO, decodeJpeg } from "@tensorflow/tfjs-react-native";
+
 import { Principal } from "./components/Principal";
 import { Prediction } from "./components/Prediction";
 
-const modelJson = require("./model/model.json");
-const modelWeights = require("./model/model.bin");
+const modelJson = require("./model-tilapias/model.json");
+const modelWeights = require("./model-tilapias/model.bin");
 
 export default function App() {
   const [model, setModel] = useState<tf.LayersModel>();
@@ -29,7 +20,7 @@ export default function App() {
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] =
     useState<boolean>(false);
   const [photo, setPhoto] = useState<any>();
-  const [prediction, setPrediction] = useState("Perro");
+  const [prediction, setPrediction] = useState("");
 
   useEffect(() => {
     const cargarModelo = async () => {
@@ -37,7 +28,7 @@ export default function App() {
       const model = await tf.loadLayersModel(
         bundleResourceIO(modelJson, modelWeights)
       );
-      //console.log(model.summary());
+      console.log(model.summary());
 
       setModel(model);
     };
@@ -55,6 +46,19 @@ export default function App() {
     })();
   }, []);
 
+  const takePic = async () => {
+    const options = {
+      quality: 1,
+      base64: true,
+      exif: false,
+    };
+
+    const newPhoto = await cameraRef.current?.takePictureAsync(options);
+
+    setPhoto(newPhoto);
+    setPrediction("Cargando...")
+  };
+
   const handleImageLoaded = async (
     event: NativeSyntheticEvent<ImageLoadEventData>
   ) => {
@@ -63,7 +67,7 @@ export default function App() {
     const imgB64 = dataURL.split(";base64,")[1];
     const imgBuffer = tf.util.encodeString(imgB64, "base64").buffer;
     const raw = new Uint8Array(imgBuffer);
-    console.log(raw.length)
+    console.log(raw.length);
     const imagesTensor = decodeJpeg(raw);
 
     // Process input data
@@ -81,20 +85,15 @@ export default function App() {
       expandedTensor
     )) as tf.Tensor<tf.Rank>;
 
-    console.log(prediction.arraySync())
+    console.log(prediction.arraySync());
     const result = await prediction.data();
     console.log("Predict " + result.toString());
-    
-    if (parseInt(result.toString()) == 0) {
-      setPrediction("Gato");
-    } else {
-      setPrediction("Perro");
-    }
-  };
 
-  const handlePredict = () => {
-    //console.log(photo);
-    //console.log(model?.predict(tf.ones([1, 64, 64, 3])).toString());
+    if (parseInt(result.toString()) == 0) {
+      setPrediction("Hembra");
+    } else {
+      setPrediction("Macho");
+    }
   };
 
   if (hasCameraPermission === undefined) {
@@ -105,19 +104,6 @@ export default function App() {
     </Text>;
   }
 
-  const takePic = async () => {
-    const options = {
-      quality: -20,
-      base64: true,
-      exif: false,
-    };
-
-    const newPhoto = await cameraRef.current?.takePictureAsync(options);
-
-    setPhoto(newPhoto);
-    setPrediction("Cargando...")
-  };
-
   if (photo) {
     return (
       <Prediction
@@ -125,8 +111,6 @@ export default function App() {
         photo={photo}
         setPhoto={setPhoto}
         handleImageLoaded={handleImageLoaded}
-        handlePredict={handlePredict}
-        hasMediaLibraryPermission
       />
     );
   }
