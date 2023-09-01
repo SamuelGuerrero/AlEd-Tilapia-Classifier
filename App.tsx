@@ -113,7 +113,7 @@ export default function App() {
   return <Landing />
 
   if (hasCameraPermission === undefined) {
-    return <Text>Requesting permissions...</Text>;
+    return <Text className->Requesting permissions...</Text>;
   } else if (!hasCameraPermission) {
     <Text>
       Permission for camera not granted. Please change this in settings.
