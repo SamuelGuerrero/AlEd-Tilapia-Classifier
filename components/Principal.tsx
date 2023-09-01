@@ -12,6 +12,7 @@ export const Principal = ({ cameraRef, takePic }: PrincipalProps) => {
   return (
     <Camera
       ratio="20:10"
+      // zoom={0.15}
       style={{
         flexGrow: 1,
         flexShrink: 1,

@@ -101,7 +101,11 @@ export const Prediction = ({
         >
           <Image
             source={{ uri: "data:image/jpg;base64," + photo.base64 }}
-            style={{ width: 288, height: 288, borderRadius: 12 }}
+            style={{
+              width: 288,
+              height: 288,
+              borderRadius: 12,
+            }}
             onLoad={handleImageLoaded}
           />
         </View>

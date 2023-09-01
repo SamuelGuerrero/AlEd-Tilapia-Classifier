@@ -1,27 +1,39 @@
+// React Native utilities
 import { ImageLoadEventData, NativeSyntheticEvent, Text } from "react-native";
-import { Camera } from "expo-camera";
 import { useEffect, useRef, useState } from "react";
 import * as React from "react";
 
-import * as tf from "@tensorflow/tfjs";
+// For Camera utilitis
+import { Camera } from "expo-camera";
 import { requestCameraPermissionsAsync } from "expo-image-picker";
+
+// Tensorflow utilities
+import * as tf from "@tensorflow/tfjs";
 import { bundleResourceIO, decodeJpeg } from "@tensorflow/tfjs-react-native";
 
+// Ract Native Functional components
 import { Principal } from "./components/Principal";
 import { Prediction } from "./components/Prediction";
+import Landing from "./components/Landing";
 
+// Loading keras model files
 const modelJson = require("./model-tilapias/model.json");
 const modelWeights = require("./model-tilapias/model.bin");
 
 export default function App() {
+  // To save keras model
   const [model, setModel] = useState<tf.LayersModel>();
-  const cameraRef = useRef<any>();
-  const [hasCameraPermission, setHasCameraPermission] = useState<boolean>();
-  const [hasMediaLibraryPermission, setHasMediaLibraryPermission] =
-    useState<boolean>(false);
+  // To save photo
   const [photo, setPhoto] = useState<any>();
+  // To put prediction
   const [prediction, setPrediction] = useState("");
+  // To camera permission
+  const [hasCameraPermission, setHasCameraPermission] = useState<boolean>();
 
+  // To get cameraRef
+  const cameraRef = useRef<any>();
+
+  // Para cargar el modelo
   useEffect(() => {
     const cargarModelo = async () => {
       await tf.ready();
@@ -36,19 +48,19 @@ export default function App() {
     cargarModelo();
   }, []);
 
+  // Para pedir permisos
   useEffect(() => {
     (async () => {
       const cameraPermission = await Camera.requestCameraPermissionsAsync();
-      const mediaLibraryPermission = await requestCameraPermissionsAsync();
 
       setHasCameraPermission(cameraPermission.status === "granted");
-      setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
     })();
   }, []);
 
+  // Guardando la foto que se toma
   const takePic = async () => {
     const options = {
-      quality: 1,
+      quality: 0.1,
       base64: true,
       exif: false,
     };
@@ -56,7 +68,7 @@ export default function App() {
     const newPhoto = await cameraRef.current?.takePictureAsync(options);
 
     setPhoto(newPhoto);
-    setPrediction("Cargando...")
+    setPrediction("Cargando...");
   };
 
   const handleImageLoaded = async (
@@ -89,12 +101,16 @@ export default function App() {
     const result = await prediction.data();
     console.log("Predict " + result.toString());
 
-    if (parseInt(result.toString()) == 0) {
+    if (parseInt(result.toString()) < 0.5) {
       setPrediction("Hembra");
     } else {
       setPrediction("Macho");
     }
+
+    tf.dispose([imagesTensor, processedTensor, expandedTensor, prediction]);
   };
+
+  return <Landing />
 
   if (hasCameraPermission === undefined) {
     return <Text>Requesting permissions...</Text>;
