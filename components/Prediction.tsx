@@ -26,18 +26,10 @@ type PredictionProps = {
 
 export const Prediction = ({ photo, setPhoto, model }: PredictionProps) => {
   const [prediction, setPrediction] = useState("");
-  const [imageUri, setImageUri] = useState("");
   const imageRef = useRef<Image | null>(null);
 
   const deleteState = () => {
     setPhoto(undefined);
-  };
-
-  const handleLoadImage = (event: NativeSyntheticEvent<ImageLoadEventData>) => {
-    console.log("Entrando");
-
-    const dataURL = event.nativeEvent.source.uri;
-    setImageUri(dataURL);
   };
 
   const resizePhoto = async (uri: string, size: number[]) => {
@@ -111,7 +103,6 @@ export const Prediction = ({ photo, setPhoto, model }: PredictionProps) => {
           ref={imageRef}
           source={{ uri: "data:image/jpg;base64," + photo.base64 }}
           style={styles.image}
-          onLoad={handleLoadImage}
         />
 
         <View style={styles.buttonsContainer}>

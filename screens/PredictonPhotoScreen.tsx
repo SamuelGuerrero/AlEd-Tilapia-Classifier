@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  NativeSyntheticEvent,
-  ImageLoadEventData,
-  Button,
-} from "react-native";
+import { View, Text, StyleSheet, Button } from "react-native";
 import { useEffect, useRef, useState } from "react";
 import * as tf from "@tensorflow/tfjs";
 import { bundleResourceIO } from "@tensorflow/tfjs-react-native";
@@ -62,7 +55,6 @@ export default function PredictonPhotoScreen() {
     const newPhoto = await cameraRef.current?.takePictureAsync(options);
 
     setPhoto(newPhoto);
-    //setPrediction("Cargando...");
   };
 
   if (hasCameraPermission === undefined) {
@@ -78,12 +70,7 @@ export default function PredictonPhotoScreen() {
   }
 
   return (
-    <Camera
-      ratio="20:10"
-      // zoom={0.15}
-      style={styles.camera}
-      ref={cameraRef}
-    >
+    <Camera ratio="20:10" style={styles.camera} ref={cameraRef}>
       <Text style={styles.text}>Centre la imágen en el cuadro</Text>
       <View style={styles.areaPhoto}></View>
       <View
