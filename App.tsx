@@ -1,5 +1,4 @@
 import { NavigationContainer } from "@react-navigation/native";
-// import "react-native-gesture-handler";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import HomePage from "./screens/HomeScreen";
@@ -33,4 +32,3 @@ export default function App() {
     </NavigationContainer>
   );
 }
-// Chek the render method of Card
