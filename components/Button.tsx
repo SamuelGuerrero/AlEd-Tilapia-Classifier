@@ -17,12 +17,11 @@ export const Button = ({ text, handleFunction, color }: ButtonProps) => {
         alignItems: "center",
         borderRadius: 8,
         height: 48,
-        width: 200,
+        width: 160,
         shadowColor: "#171717",
         shadowOffset: { width: -2, height: 4 },
         shadowOpacity: 0.2,
         shadowRadius: 3,
-        marginRight: 20,
       }}
       onPress={handleFunction}
     >
