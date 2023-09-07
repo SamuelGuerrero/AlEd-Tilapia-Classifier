@@ -70,7 +70,7 @@ export default function PredictonPhotoScreen() {
   }
 
   return (
-    <Camera ratio="20:10" style={styles.camera} ref={cameraRef}>
+    <Camera zoom={0.150} ratio="20:10" style={styles.camera} ref={cameraRef}>
       <Text style={styles.text}>Centre la imágen en el cuadro</Text>
       <View style={styles.areaPhoto}></View>
       <View
