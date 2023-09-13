@@ -16,7 +16,6 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <Image style={styles.logo} source={require("../assets/Tilapias.jpeg")} />
-
       <Image style={styles.logoName} source={require("../assets/AlEdT.png")} />
 
       <View style={styles.cardsContainer}>
