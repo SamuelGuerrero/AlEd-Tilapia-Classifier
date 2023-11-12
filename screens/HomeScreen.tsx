@@ -10,8 +10,7 @@ import React from "react";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 
 export default function HomeScreen() {
-  const { navigate } =
-    useNavigation<NavigationProp<any>>();
+  const { navigate } = useNavigation<NavigationProp<any>>();
 
   return (
     <View style={styles.container}>
@@ -19,7 +18,10 @@ export default function HomeScreen() {
       <Image style={styles.logoName} source={require("../assets/AlEdT.png")} />
 
       <View style={styles.cardsContainer}>
-        <TouchableOpacity style={[styles.card]}>
+        <TouchableOpacity
+          onPress={() => navigate("Manual")}
+          style={[styles.card]}
+        >
           <Text style={{ fontSize: 90, textAlign: "center" }}>📄</Text>
           <Text style={styles.cardText}>Manual de uso</Text>
         </TouchableOpacity>
