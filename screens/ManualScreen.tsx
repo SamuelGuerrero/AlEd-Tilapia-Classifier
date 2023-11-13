@@ -63,7 +63,7 @@ export default function ManualScreen() {
           </View>
 
           <View style={styles.cardOption}>
-            <ManualItemTitle title={step2.title} itemNumber={1} />
+            <ManualItemTitle title={step2.title} itemNumber={2} />
             <View style={styles.listSection}>
               {step2.instuctions.map((rule, index) => (
                 <ListText key={index}>{rule}</ListText>
@@ -71,7 +71,11 @@ export default function ManualScreen() {
             </View>
 
             <View style={styles.warningCard}>
-              <Text>Asegurate de que la im</Text>
+              <ListText textColor="#000">
+                Asegurate de que la papila genital esté perfectamente enfocada
+                como se muestra en la siguiente imágen.
+
+              </ListText>
             </View>
           </View>
         </View>
@@ -83,6 +87,11 @@ export default function ManualScreen() {
 const styles = StyleSheet.create({
   warningCard: {
     backgroundColor: "#ffb700",
+    opacity: 0.7,
+    paddingRight: 40,
+    paddingTop: 20,
+    borderRadius: 12,
+    color: "#000",
   },
   cardOption: {
     backgroundColor: "#212529",

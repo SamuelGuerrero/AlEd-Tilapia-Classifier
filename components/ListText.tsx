@@ -4,22 +4,26 @@ import { InformationCircleIcon } from "react-native-heroicons/outline";
 
 type ListTextProps = {
   children: ReactNode;
+  textColor?: string;
 };
 
-export const ListText = ({ children }: ListTextProps) => {
+export const ListText = ({
+  children,
+  textColor = "#FFF",
+}: ListTextProps) => {
   return (
     <View style={styles.container}>
       <InformationCircleIcon
         height={25}
         width={25}
-        color={"#4E8098"}
+        color="#4E8098"
         strokeWidth={3}
         style={{ marginTop: 2, marginRight: 10 }}
       />
-      <View >
+      <View>
         <Text
           style={{
-            color: "#FFF",
+            color: textColor,
             fontSize: 20,
             marginBottom: 12,
             textAlign: "left",
@@ -36,5 +40,6 @@ const styles = StyleSheet.create({
   container: {
     display: "flex",
     flexDirection: "row",
+    opacity: 1,
   },
 });

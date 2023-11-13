@@ -1,12 +1,4 @@
-import {
-  Image,
-  ImageLoadEventData,
-  NativeSyntheticEvent,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
 
 import { ClockIcon } from "react-native-heroicons/outline";
 import * as tf from "@tensorflow/tfjs";

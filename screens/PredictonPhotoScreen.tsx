@@ -6,40 +6,8 @@ import { Camera } from "expo-camera";
 import { Prediction } from "../components/Prediction";
 import { StatusBar } from "expo-status-bar";
 
-const modelJson = require("../vgg16Model/model.json");
-const modelWeights1 = require("../vgg16Model/group1-shard1of15.bin");
-const modelWeights2 = require("../vgg16Model/group1-shard2of15.bin");
-const modelWeights3 = require("../vgg16Model/group1-shard3of15.bin");
-const modelWeights4 = require("../vgg16Model/group1-shard4of15.bin");
-const modelWeights5 = require("../vgg16Model/group1-shard5of15.bin");
-const modelWeights6 = require("../vgg16Model/group1-shard6of15.bin");
-const modelWeights7 = require("../vgg16Model/group1-shard7of15.bin");
-const modelWeights8 = require("../vgg16Model/group1-shard8of15.bin");
-const modelWeights9 = require("../vgg16Model/group1-shard9of15.bin");
-const modelWeights10 = require("../vgg16Model/group1-shard10of15.bin");
-const modelWeights11 = require("../vgg16Model/group1-shard11of15.bin");
-const modelWeights12 = require("../vgg16Model/group1-shard12of15.bin");
-const modelWeights13 = require("../vgg16Model/group1-shard13of15.bin");
-const modelWeights14 = require("../vgg16Model/group1-shard14of15.bin");
-const modelWeights15 = require("../vgg16Model/group1-shard15of15.bin");
-
-const modelWeights = [
-  modelWeights1,
-  modelWeights2,
-  modelWeights3,
-  modelWeights4,
-  modelWeights5,
-  modelWeights6,
-  modelWeights7,
-  modelWeights8,
-  modelWeights9,
-  modelWeights10,
-  modelWeights11,
-  modelWeights12,
-  modelWeights13,
-  modelWeights14,
-  modelWeights15,
-];
+const modelJson = require("../model-tilapias/model.json");
+const modelWeights = require("../model-tilapias/model.bin");
 
 export default function PredictonPhotoScreen() {
   // To save keras model
