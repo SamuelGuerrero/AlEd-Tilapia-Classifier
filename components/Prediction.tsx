@@ -36,24 +36,28 @@ export const Prediction = ({ photo, setPhoto, model }: PredictionProps) => {
   async function handlePredict() {
     //const imgB64  = imageUri.split(";base64,")[1];
 
-    const { uri } = await resizePhoto(photo.uri, [300, 300]);
+    const { uri } = await resizePhoto(photo.uri, [224, 224]);
 
     const imgB64 = await FileSystem.readAsStringAsync(uri, {
       encoding: FileSystem.EncodingType.Base64,
     });
     const imgBuffer = tf.util.encodeString(imgB64, "base64").buffer;
     const raw = new Uint8Array(imgBuffer);
-    const imagesTensor = decodeJpeg(raw);
+    let imagesTensor = decodeJpeg(raw);
 
     // Process input data
-    console.log(imagesTensor);
 
     const processedTensor = tf.image.resizeBilinear(
       imagesTensor,
-      [64, 64]
+      [64, 64],
+      true
     ) as tf.Tensor<tf.Rank.R3>;
 
+    console.log(processedTensor);
+
     const expandedTensor = tf.expandDims(processedTensor, 0);
+
+    console.log("Tamanio: ", imagesTensor.shape);
 
     // // Wait for the prediction to complete
     const prediction = (await model?.predict(

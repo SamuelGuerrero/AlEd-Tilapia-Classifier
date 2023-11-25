@@ -6,8 +6,28 @@ import { Camera } from "expo-camera";
 import { Prediction } from "../components/Prediction";
 import { StatusBar } from "expo-status-bar";
 
-const modelJson = require("../model-tilapias/model.json");
-const modelWeights = require("../model-tilapias/model.bin");
+// const modelJson = require("../model-tilapias/model.json");
+// const modelWeights = require("../model-tilapias/model.bin");
+
+const modelJson = require("../vgg16Model/model.json");
+
+const modelWeights = [
+  require('../vgg16Model/group1-shard1of15.bin'),
+  require('../vgg16Model/group1-shard2of15.bin'),
+  require('../vgg16Model/group1-shard3of15.bin'),
+  require('../vgg16Model/group1-shard4of15.bin'),
+  require('../vgg16Model/group1-shard5of15.bin'),
+  require('../vgg16Model/group1-shard6of15.bin'),
+  require('../vgg16Model/group1-shard7of15.bin'),
+  require('../vgg16Model/group1-shard8of15.bin'),
+  require('../vgg16Model/group1-shard9of15.bin'),
+  require('../vgg16Model/group1-shard10of15.bin'),
+  require('../vgg16Model/group1-shard11of15.bin'),
+  require('../vgg16Model/group1-shard12of15.bin'),
+  require('../vgg16Model/group1-shard13of15.bin'),
+  require('../vgg16Model/group1-shard14of15.bin'),
+  require('../vgg16Model/group1-shard15of15.bin'),
+];
 
 export default function PredictonPhotoScreen() {
   // To save keras model
@@ -51,7 +71,7 @@ export default function PredictonPhotoScreen() {
   // Guardando la foto que se toma
   const takePic = async () => {
     const options = {
-      quality: 0.1,
+      quality: 1,
       base64: true,
       exif: false,
     };
@@ -70,7 +90,20 @@ export default function PredictonPhotoScreen() {
   }
 
   if (isLoading) {
-    return <Text>Cargando...</Text>;
+    return (
+      <View
+        style={{
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#000",
+        }}
+      >
+        <Text style={{ color: "#FFF" }}>Cargando...</Text>
+      </View>
+    );
   }
 
   if (photo) {
