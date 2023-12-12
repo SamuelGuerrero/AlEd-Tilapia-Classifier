@@ -35,7 +35,6 @@ export const Prediction = ({ photo, setPhoto, model }: PredictionProps) => {
 
   async function handlePredict() {
     //const imgB64  = imageUri.split(";base64,")[1];
-
     const { uri } = await resizePhoto(photo.uri, [224, 224]);
 
     const imgB64 = await FileSystem.readAsStringAsync(uri, {
