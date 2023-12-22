@@ -38,14 +38,14 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#FFF", // Color blanco
+    shadowColor: "#FFF",
     shadowOffset: {
       width: 1,
       height: 1,
     },
     shadowOpacity: 0.8,
     shadowRadius: 4,
-    elevation: 5, // Esta propiedad agrega sombra en dispositivos Android
+    elevation: 5,
   },
   item: {
     display: "flex",
