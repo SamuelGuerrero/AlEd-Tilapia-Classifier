@@ -30,17 +30,11 @@ const modelWeights = [
 ];
 
 export default function PredictonPhotoScreen() {
-  // To save keras model
   const [model, setModel] = useState<tf.LayersModel>();
-  // To save photo
   const [photo, setPhoto] = useState<any>();
-  // To put prediction
-  // To camera permission
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean>();
-
   const [isLoading, setisLoading] = useState(false);
 
-  // To get cameraRef
   const cameraRef = useRef<any>();
 
   useEffect(() => {
