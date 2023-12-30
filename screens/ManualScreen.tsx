@@ -12,6 +12,11 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { ManualItemTitle } from "../components/ManualItemTitle";
 import { ListText } from "../components/ListText";
 
+type RootStackParamList = {
+  Manual: undefined;
+  Options: undefined;
+};
+
 export default function ManualScreen() {
   const { navigate } = useNavigation<NavigationProp<any>>();
 
@@ -74,7 +79,10 @@ export default function ManualScreen() {
               <ListText textColor="#000">
                 Asegurate de que la papila genital esté perfectamente enfocada
                 como se muestra en la siguiente imágen.
-
+                <Image
+                  style={styles.example}
+                  source={require("../assets/Example1.jpg")}
+                />
               </ListText>
             </View>
           </View>
@@ -85,6 +93,9 @@ export default function ManualScreen() {
 }
 
 const styles = StyleSheet.create({
+  example: {
+
+  },
   warningCard: {
     backgroundColor: "#ffb700",
     opacity: 0.7,
@@ -92,6 +103,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     borderRadius: 12,
     color: "#000",
+    display: "flex"
   },
   cardOption: {
     backgroundColor: "#212529",
@@ -105,7 +117,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
   },
   header: {
-    backgroundColor: "#000814",
     display: "flex",
     flexDirection: "row",
     alignItems: "center",

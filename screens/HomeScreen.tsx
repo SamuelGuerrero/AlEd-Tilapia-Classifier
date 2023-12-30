@@ -9,8 +9,13 @@ import {
 import React from "react";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 
+type RootStackParamList = {
+  Manual: undefined;
+  Options: undefined;
+};
+
 export default function HomeScreen() {
-  const { navigate } = useNavigation<NavigationProp<any>>();
+  const { navigate } = useNavigation<NavigationProp<RootStackParamList>>();
 
   return (
     <View style={styles.container}>
