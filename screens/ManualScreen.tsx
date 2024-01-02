@@ -1,4 +1,5 @@
 import {
+  Dimensions,
   Image,
   ScrollView,
   ScrollViewBase,
@@ -19,6 +20,9 @@ type RootStackParamList = {
 
 export default function ManualScreen() {
   const { navigate } = useNavigation<NavigationProp<any>>();
+
+  const screenWidth = Dimensions.get("window").width;
+  const calculatedWidth = screenWidth * 0.8 - 40;
 
   const step1 = {
     title: "Preparar la captura",
@@ -76,14 +80,17 @@ export default function ManualScreen() {
             </View>
 
             <View style={styles.warningCard}>
-              <ListText textColor="#000">
+              <ListText style={{ paddingRight: 40 }} textColor="#000">
                 Asegurate de que la papila genital esté perfectamente enfocada
                 como se muestra en la siguiente imágen.
+              </ListText>
+              <View style={styles.exampleContainer}>
                 <Image
-                  style={styles.example}
+                  resizeMode="contain"
+                  style={[styles.example, { width: calculatedWidth }]}
                   source={require("../assets/Example1.jpg")}
                 />
-              </ListText>
+              </View>
             </View>
           </View>
         </View>
@@ -93,17 +100,23 @@ export default function ManualScreen() {
 }
 
 const styles = StyleSheet.create({
+  exampleContainer: {
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+  },
   example: {
+    height: 450
 
   },
   warningCard: {
     backgroundColor: "#ffb700",
     opacity: 0.7,
-    paddingRight: 40,
     paddingTop: 20,
     borderRadius: 12,
     color: "#000",
-    display: "flex"
+    display: "flex",
+    justifyContent: "center",
   },
   cardOption: {
     backgroundColor: "#212529",
