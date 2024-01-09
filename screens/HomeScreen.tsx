@@ -1,3 +1,4 @@
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -6,8 +7,6 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from "react-native";
-import React from "react";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
 
 type RootStackParamList = {
   Manual: undefined;

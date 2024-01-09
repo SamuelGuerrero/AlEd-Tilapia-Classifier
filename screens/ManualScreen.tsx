@@ -1,25 +1,16 @@
-import {
-  Dimensions,
-  Image,
-  ScrollView,
-  ScrollViewBase,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-import React from "react";
-import { ChevronLeftIcon } from "react-native-heroicons/outline";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { ManualItemTitle } from "../components/ManualItemTitle";
+import { Dimensions, Image, ScrollView, StyleSheet, View } from "react-native";
+import { ChevronLeftIcon } from "react-native-heroicons/outline";
+
 import { ListText } from "../components/ListText";
+import { ManualItemTitle } from "../components/ManualItemTitle";
 
 type RootStackParamList = {
-  Manual: undefined;
-  Options: undefined;
+  Home: undefined;
 };
 
 export default function ManualScreen() {
-  const { navigate } = useNavigation<NavigationProp<any>>();
+  const { navigate } = useNavigation<NavigationProp<RootStackParamList>>();
 
   const screenWidth = Dimensions.get("window").width;
   const calculatedWidth = screenWidth * 0.8 - 40;
@@ -106,8 +97,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   example: {
-    height: 450
-
+    height: 450,
   },
   warningCard: {
     backgroundColor: "#ffb700",

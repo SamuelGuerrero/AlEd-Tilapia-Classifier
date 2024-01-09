@@ -1,17 +1,17 @@
 import React, { ReactNode } from "react";
-import { StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from "react-native";
+import { StyleProp, StyleSheet, Text, View, ViewStyle } from "react-native";
 import { InformationCircleIcon } from "react-native-heroicons/outline";
 
 type ListTextProps = {
   children: ReactNode;
   textColor?: string;
-  style?: StyleProp<ViewStyle>
+  style?: StyleProp<ViewStyle>;
 };
 
 export const ListText = ({
   children,
   textColor = "#FFF",
-  style
+  style,
 }: ListTextProps) => {
   return (
     <View style={[styles.container, style]}>

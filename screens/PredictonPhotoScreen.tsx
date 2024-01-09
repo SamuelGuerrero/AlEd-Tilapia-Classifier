@@ -4,6 +4,7 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect, useRef, useState } from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 
+import LoadingScreen from "../components/LoadingScreen";
 import { Prediction } from "../components/Prediction";
 import { loadModel } from "../utils/loadModel";
 
@@ -54,11 +55,7 @@ export default function PredictonPhotoScreen() {
   }
 
   if (isLoading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>Cargando...</Text>
-      </View>
-    );
+    return <LoadingScreen />;
   }
 
   if (photo) {
@@ -96,15 +93,4 @@ const styles = StyleSheet.create({
     lineHeight: 28,
   },
   areaPhoto: { borderColor: "#000", width: 280, height: 280, borderWidth: 3 },
-  loadingContainer: {
-    width: "100%",
-    height: "100%",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#000",
-  },
-  loadingText: {
-    color: "#FFF",
-  },
 });

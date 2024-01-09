@@ -1,6 +1,5 @@
-import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
-import React from "react";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import {
   ArrowUpTrayIcon,
   CameraIcon,
@@ -22,7 +21,7 @@ export default function Optionscreen() {
       <View>
         <TouchableOpacity style={styles.card}>
           <Text style={styles.textCard}>Cargar archivos</Text>
-          <ArrowUpTrayIcon strokeWidth={1} stroke={"#FFF"} size={200} />
+          <ArrowUpTrayIcon strokeWidth={1} stroke="#FFF" size={200} />
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -30,7 +29,7 @@ export default function Optionscreen() {
           style={styles.card}
         >
           <Text style={styles.textCard}>Tomar foto</Text>
-          <CameraIcon strokeWidth={1} stroke={"#FFF"} size={200} />
+          <CameraIcon strokeWidth={1} stroke="#FFF" size={200} />
         </TouchableOpacity>
       </View>
     </View>

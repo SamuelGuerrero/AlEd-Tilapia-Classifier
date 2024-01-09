@@ -5,11 +5,18 @@ type ButtonProps = {
   text: string;
   handleFunction?: (value: any) => void;
   color: string;
+  disabled?: boolean;
 };
 
-export const Button = ({ text, handleFunction, color }: ButtonProps) => {
+export const Button = ({
+  text,
+  handleFunction,
+  color,
+  disabled,
+}: ButtonProps) => {
   return (
     <TouchableOpacity
+      disabled={disabled}
       style={{
         backgroundColor: `#${color}`,
         display: "flex",
