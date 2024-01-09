@@ -2,9 +2,9 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import HomePage from "./screens/HomeScreen";
-import PredictonPhotoScreen from "./screens/PredictonPhotoScreen";
-import Optionscreen from "./screens/OptionsScreen";
 import ManualScreen from "./screens/ManualScreen";
+import Optionscreen from "./screens/OptionsScreen";
+import PredictonPhotoScreen from "./screens/PredictonPhotoScreen";
 
 const Stack = createNativeStackNavigator();
 

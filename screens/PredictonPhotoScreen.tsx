@@ -1,100 +1,62 @@
-import { View, Text, StyleSheet, Button } from "react-native";
-import { useEffect, useRef, useState } from "react";
 import * as tf from "@tensorflow/tfjs";
-import { bundleResourceIO } from "@tensorflow/tfjs-react-native";
-import { Camera } from "expo-camera";
-import { Prediction } from "../components/Prediction";
+import { Camera, CameraCapturedPicture } from "expo-camera";
 import { StatusBar } from "expo-status-bar";
+import { useEffect, useRef, useState } from "react";
+import { View, Text, StyleSheet, Button } from "react-native";
 
-// const modelJson = require("../model-tilapias/model.json");
-// const modelWeights = require("../model-tilapias/model.bin");
-
-const modelJson = require("../vgg16Model/model.json");
-
-const modelWeights = [
-  require("../vgg16Model/group1-shard1of15.bin"),
-  require("../vgg16Model/group1-shard2of15.bin"),
-  require("../vgg16Model/group1-shard3of15.bin"),
-  require("../vgg16Model/group1-shard4of15.bin"),
-  require("../vgg16Model/group1-shard5of15.bin"),
-  require("../vgg16Model/group1-shard6of15.bin"),
-  require("../vgg16Model/group1-shard7of15.bin"),
-  require("../vgg16Model/group1-shard8of15.bin"),
-  require("../vgg16Model/group1-shard9of15.bin"),
-  require("../vgg16Model/group1-shard10of15.bin"),
-  require("../vgg16Model/group1-shard11of15.bin"),
-  require("../vgg16Model/group1-shard12of15.bin"),
-  require("../vgg16Model/group1-shard13of15.bin"),
-  require("../vgg16Model/group1-shard14of15.bin"),
-  require("../vgg16Model/group1-shard15of15.bin"),
-];
+import { Prediction } from "../components/Prediction";
+import { loadModel } from "../utils/loadModel";
 
 export default function PredictonPhotoScreen() {
-  const [model, setModel] = useState<tf.LayersModel>();
-  const [photo, setPhoto] = useState<any>();
+  const [photo, setPhoto] = useState<CameraCapturedPicture | undefined>();
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean>();
-  const [isLoading, setisLoading] = useState(false);
 
-  const cameraRef = useRef<any>();
+  const cameraRef = useRef<Camera | null>(null);
+
+  const [model, setModel] = useState<tf.LayersModel>();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    setisLoading(true);
-    const cargarModelo = async () => {
-      await tf.ready();
-      const model = await tf.loadLayersModel(
-        bundleResourceIO(modelJson, modelWeights)
-      );
-      console.log(model.summary());
-
-      setModel(model);
-      setisLoading(false);
-    };
-
-    cargarModelo();
+    loadInitialData();
+    requestCameraPermission();
   }, []);
 
-  // Para pedir permisos
-  useEffect(() => {
-    (async () => {
-      const cameraPermission = await Camera.requestCameraPermissionsAsync();
+  const loadInitialData = async () => {
+    setIsLoading(true);
+    try {
+      const loadedModel = await loadModel();
+      setModel(loadedModel);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error loading model: ", error);
+    }
+  };
 
-      setHasCameraPermission(cameraPermission.status === "granted");
-    })();
-  }, []);
+  const requestCameraPermission = async () => {
+    const cameraPermission = await Camera.requestCameraPermissionsAsync();
+    setHasCameraPermission(cameraPermission.status === "granted");
+  };
 
   const takePic = async () => {
-    const options = {
-      quality: 1,
-      base64: true,
-      exif: false,
-    };
-
+    const options = { quality: 1, base64: true, exif: false };
     const newPhoto = await cameraRef.current?.takePictureAsync(options);
-
     setPhoto(newPhoto);
   };
 
   if (hasCameraPermission === undefined) {
     return <Text className->Requesting permissions...</Text>;
   } else if (!hasCameraPermission) {
-    <Text>
-      Permission for camera not granted. Please change this in settings.
-    </Text>;
+    return (
+      <Text>
+        Permission for camera not granted. Please change this in settings.
+      </Text>
+    );
   }
 
   if (isLoading) {
     return (
-      <View
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#000",
-        }}
-      >
-        <Text style={{ color: "#FFF" }}>Cargando...</Text>
+      <View style={styles.loadingContainer}>
+        <Text style={styles.loadingText}>Cargando...</Text>
       </View>
     );
   }
@@ -106,7 +68,7 @@ export default function PredictonPhotoScreen() {
   return (
     <Camera ratio="20:10" style={styles.camera} ref={cameraRef}>
       <Text style={styles.text}>Centre la imágen en el cuadro</Text>
-      <View style={styles.areaPhoto}></View>
+      <View style={styles.areaPhoto} />
       <View
         style={{ backgroundColor: "#FFF", position: "absolute", bottom: 48 }}
       >
@@ -134,4 +96,15 @@ const styles = StyleSheet.create({
     lineHeight: 28,
   },
   areaPhoto: { borderColor: "#000", width: 280, height: 280, borderWidth: 3 },
+  loadingContainer: {
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#000",
+  },
+  loadingText: {
+    color: "#FFF",
+  },
 });

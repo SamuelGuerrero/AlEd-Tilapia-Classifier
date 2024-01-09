@@ -1,14 +1,12 @@
-import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
-
-import { ClockIcon } from "react-native-heroicons/outline";
 import * as tf from "@tensorflow/tfjs";
 import { decodeJpeg } from "@tensorflow/tfjs-react-native";
+import * as FileSystem from "expo-file-system";
+import * as ImageManipulator from "expo-image-manipulator";
+import { useRef, useState } from "react";
+import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { ClockIcon } from "react-native-heroicons/outline";
 
 import { Button } from "./Button";
-import { useRef, useState } from "react";
-
-import * as ImageManipulator from "expo-image-manipulator";
-import * as FileSystem from "expo-file-system";
 
 type PredictionProps = {
   photo: any;
@@ -46,20 +44,20 @@ export const Prediction = ({ photo, setPhoto, model }: PredictionProps) => {
     const processedTensor = tf.image.resizeBilinear(
       imagesTensor,
       [64, 64],
-      false
+      false,
     ) as tf.Tensor<tf.Rank.R3>;
 
     const expandedTensor = tf.expandDims(processedTensor, 0);
 
-    const prediction = (await model?.predict(
-      expandedTensor
-    )) as tf.Tensor<tf.Rank>;
+    const prediction = (await model?.predict([
+      expandedTensor,
+    ])) as tf.Tensor<tf.Rank>;
 
     console.log(prediction.arraySync());
     const result = await prediction.data();
     console.log("Predict " + result.toString());
 
-    if (parseInt(result.toString()) < 0.5) {
+    if (parseInt(result.toString(), 10) < 0.5) {
       setPrediction("Hembra");
     } else {
       setPrediction("Macho");
@@ -72,13 +70,13 @@ export const Prediction = ({ photo, setPhoto, model }: PredictionProps) => {
     <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <View>
-          {prediction != "Loading" ? (
+          {prediction !== "Loading" ? (
             <Text style={styles.textPrediction}>{prediction}</Text>
           ) : (
             <View style={styles.waitingContainer}>
               <ClockIcon
                 strokeWidth={3}
-                stroke={"#A31621"}
+                stroke="#A31621"
                 style={{ width: 40, height: 40, marginRight: 5 }}
               />
               <Text style={styles.textWaiting}>Cargando...</Text>
