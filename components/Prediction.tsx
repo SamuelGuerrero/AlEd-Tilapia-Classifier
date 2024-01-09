@@ -1,22 +1,24 @@
 import * as tf from "@tensorflow/tfjs";
 import { decodeJpeg } from "@tensorflow/tfjs-react-native";
+import { CameraCapturedPicture } from "expo-camera";
 import * as FileSystem from "expo-file-system";
 import * as ImageManipulator from "expo-image-manipulator";
-import { useRef, useState } from "react";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { ClockIcon } from "react-native-heroicons/outline";
 
 import { Button } from "./Button";
 
 type PredictionProps = {
-  photo: any;
+  photo: CameraCapturedPicture | undefined;
   model: tf.LayersModel | undefined;
-  setPhoto: (value: any) => void;
+  setPhoto: Dispatch<SetStateAction<CameraCapturedPicture | undefined>>;
 };
 
 export const Prediction = ({ photo, setPhoto, model }: PredictionProps) => {
   const [prediction, setPrediction] = useState("");
   const imageRef = useRef<Image | null>(null);
+  const [isPredictLoading, setisPredictLoading] = useState<boolean>(false);
 
   const deleteState = () => {
     setPhoto(undefined);
@@ -32,38 +34,41 @@ export const Prediction = ({ photo, setPhoto, model }: PredictionProps) => {
   };
 
   async function handlePredict() {
-    const { uri } = await resizePhoto(photo.uri, [64, 64]);
+    setisPredictLoading(true);
+    const { uri } = await resizePhoto(photo?.uri ?? "", [300, 300]);
 
     const imgB64 = await FileSystem.readAsStringAsync(uri, {
       encoding: FileSystem.EncodingType.Base64,
     });
     const imgBuffer = tf.util.encodeString(imgB64, "base64").buffer;
     const raw = new Uint8Array(imgBuffer);
-    const imagesTensor = decodeJpeg(raw);
+    const imagesTensor = decodeJpeg(raw, 3);
 
     const processedTensor = tf.image.resizeBilinear(
       imagesTensor,
       [64, 64],
-      false,
-    ) as tf.Tensor<tf.Rank.R3>;
+      false
+    );
 
     const expandedTensor = tf.expandDims(processedTensor, 0);
+    const normalizedTensor = tf.div(expandedTensor, tf.scalar(255));
 
     const prediction = (await model?.predict([
-      expandedTensor,
+      normalizedTensor,
     ])) as tf.Tensor<tf.Rank>;
 
     console.log(prediction.arraySync());
     const result = await prediction.data();
     console.log("Predict " + result.toString());
 
-    if (parseInt(result.toString(), 10) < 0.5) {
+    if (result[0] < 0.5) {
       setPrediction("Hembra");
     } else {
       setPrediction("Macho");
     }
 
     tf.dispose([imagesTensor, processedTensor, expandedTensor, prediction]);
+    setisPredictLoading(false);
   }
 
   return (
@@ -71,7 +76,15 @@ export const Prediction = ({ photo, setPhoto, model }: PredictionProps) => {
       <SafeAreaView style={styles.safeArea}>
         <View>
           {prediction !== "Loading" ? (
-            <Text style={styles.textPrediction}>{prediction}</Text>
+            <Text
+              style={
+                prediction === "Hembra"
+                  ? styles.textPredictionHembra
+                  : styles.textPredictionMacho
+              }
+            >
+              {prediction}
+            </Text>
           ) : (
             <View style={styles.waitingContainer}>
               <ClockIcon
@@ -86,7 +99,7 @@ export const Prediction = ({ photo, setPhoto, model }: PredictionProps) => {
 
         <Image
           ref={imageRef}
-          source={{ uri: "data:image/jpg;base64," + photo.base64 }}
+          source={{ uri: "data:image/jpg;base64," + photo?.base64 }}
           style={styles.image}
         />
 
@@ -97,6 +110,7 @@ export const Prediction = ({ photo, setPhoto, model }: PredictionProps) => {
             handleFunction={deleteState}
           />
           <Button
+            disabled={isPredictLoading}
             handleFunction={handlePredict}
             color="2E86C1"
             text="Predecir"
@@ -136,8 +150,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  textPrediction: {
-    color: "#4E8098",
+  textPredictionHembra: {
+    color: "#CD5C5C",
+    fontWeight: "600",
+    fontSize: 36,
+    lineHeight: 40,
+  },
+  textPredictionMacho: {
+    color: "#2E86C1",
     fontWeight: "600",
     fontSize: 36,
     lineHeight: 40,
