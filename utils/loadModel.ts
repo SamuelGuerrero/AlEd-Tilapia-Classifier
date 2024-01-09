@@ -26,5 +26,6 @@ export const loadModel = async () => {
   const model = await tf.loadLayersModel(
     bundleResourceIO(modelJson, modelWeights),
   );
+  console.log(model.summary());
   return model;
 };
