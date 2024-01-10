@@ -6,7 +6,8 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "eas-build-pre-install": "npm config set legacy-peer-deps true"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.18.2",
@@ -17,7 +18,7 @@
     "@tensorflow/tfjs-react-native": "^0.8.0",
     "eslint": "^8.56.0",
     "eslint-config-universe": "^12.0.0",
-    "expo": "~49.0.8",
+    "expo": "^48.0.0",
     "expo-camera": "~13.4.4",
     "expo-file-system": "~15.4.5",
     "expo-gl": "~13.0.1",
