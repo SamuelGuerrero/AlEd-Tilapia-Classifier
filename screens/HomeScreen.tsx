@@ -37,7 +37,7 @@ export default function HomeScreen() {
           <ImageBackground
             borderRadius={12}
             style={styles.imageCard}
-            source={require("../assets/Tilapias.png")}
+            source={require("../assets/Tilapias2.png")}
           />
           <Text style={styles.cardText}>Predecir</Text>
         </TouchableOpacity>
