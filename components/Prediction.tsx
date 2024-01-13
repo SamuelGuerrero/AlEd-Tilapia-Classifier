@@ -47,7 +47,7 @@ export const Prediction = ({ photo, setPhoto, model }: PredictionProps) => {
     const processedTensor = tf.image.resizeBilinear(
       imagesTensor,
       [64, 64],
-      false
+      false,
     );
 
     const expandedTensor = tf.expandDims(processedTensor, 0);
