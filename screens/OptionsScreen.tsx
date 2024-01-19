@@ -1,31 +1,31 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
-import {
-  ArrowUpTrayIcon,
-  CameraIcon,
-  ChevronLeftIcon,
-} from "react-native-heroicons/outline";
+import { ArrowUpTrayIcon, CameraIcon } from "react-native-heroicons/outline";
+
+import { BackButton } from "../components";
+
+type RootStackParamList = {
+  Home: undefined;
+  PredictionByPhoto: undefined;
+  PredictionUploadPhotoScreen: undefined;
+};
 
 export default function Optionscreen() {
-  const { navigate } = useNavigation<NavigationProp<any>>();
+  const { navigate } = useNavigation<NavigationProp<RootStackParamList>>();
   return (
     <View style={styles.container}>
-      <View style={styles.backContainer}>
-        <ChevronLeftIcon
-          onPress={() => navigate("Home")}
-          style={{}}
-          strokeWidth={2}
-          size={40}
-        />
-      </View>
+      <BackButton onClick={() => navigate("Home")} />
       <View>
-        <TouchableOpacity style={styles.card}>
+        <TouchableOpacity
+          onPress={() => navigate("PredictionUploadPhotoScreen")}
+          style={styles.card}
+        >
           <Text style={styles.textCard}>Cargar archivos</Text>
           <ArrowUpTrayIcon strokeWidth={1} stroke="#FFF" size={200} />
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => navigate("Prediction By Photo")}
+          onPress={() => navigate("PredictionByPhoto")}
           style={styles.card}
         >
           <Text style={styles.textCard}>Tomar foto</Text>

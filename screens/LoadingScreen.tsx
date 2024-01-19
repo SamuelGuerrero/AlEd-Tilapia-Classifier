@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { useState, useEffect } from "react";
+import { View, Text, StyleSheet, Image } from "react-native";
 
 export default function LoadingScreen() {
   const [dots, setDots] = useState(".");
@@ -14,6 +14,8 @@ export default function LoadingScreen() {
 
   return (
     <View style={styles.loadingContainer}>
+      <Image style={styles.logoName} source={require("../assets/AlEdT.png")} />
+      <Image style={styles.logo} source={require("../assets/Tilapias.jpeg")} />
       <Text style={styles.loadingText}>Cargando{dots}</Text>
     </View>
   );
@@ -30,7 +32,18 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     color: "#FFF",
-    fontSize: 28,
-    fontWeight: "500",
+    fontSize: 32,
+    fontWeight: "600",
+    marginTop: 100,
+  },
+  logoName: {
+    width: 250,
+    height: 80,
+    marginLeft: "auto",
+    marginRight: "auto",
+  },
+  logo: {
+    width: 380,
+    height: 200,
   },
 });
