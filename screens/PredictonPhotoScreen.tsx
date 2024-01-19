@@ -46,6 +46,7 @@ export default function PredictonPhotoScreen() {
           },
         );
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          setHasCameraPermission(true);
           console.log("Ahora tienes acceso a la cámara");
         } else {
           console.log("Permiso de cámara denegado");
