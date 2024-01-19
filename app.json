@@ -17,11 +17,15 @@
         {
           "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera."
         }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "La aplicación necesita acceso a tu galería para cargar imágenes"
+        }
       ]
     ],
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.toprak44kmpl.aled"
