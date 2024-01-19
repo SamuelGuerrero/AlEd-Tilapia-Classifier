@@ -1,13 +1,11 @@
 import * as tf from "@tensorflow/tfjs";
-import { decodeJpeg } from "@tensorflow/tfjs-react-native";
 import { CameraCapturedPicture } from "expo-camera";
-import * as FileSystem from "expo-file-system";
-import * as ImageManipulator from "expo-image-manipulator";
 import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { ClockIcon } from "react-native-heroicons/outline";
 
 import { Button } from "./Button";
+import { handlePredictPhoto } from "../utils/predict";
 
 type PredictionProps = {
   photo: CameraCapturedPicture | undefined;
@@ -16,66 +14,27 @@ type PredictionProps = {
 };
 
 export const Prediction = ({ photo, setPhoto, model }: PredictionProps) => {
-  const [prediction, setPrediction] = useState("");
+  const [prediction, setPrediction] = useState<"Hembra" | "Macho">();
   const imageRef = useRef<Image | null>(null);
-  const [isPredictLoading, setisPredictLoading] = useState<boolean>(false);
+  const [isPredictLoading, setIsPredictLoading] = useState<boolean>(false);
 
   const deleteState = () => {
     setPhoto(undefined);
   };
 
-  const resizePhoto = async (uri: string, size: number[]) => {
-    const actions = [{ resize: { width: size[0], height: size[1] } }];
-    const saveOptions = {
-      base64: true,
-      format: ImageManipulator.SaveFormat.JPEG,
-    };
-    return await ImageManipulator.manipulateAsync(uri, actions, saveOptions);
-  };
-
-  async function handlePredict() {
-    setisPredictLoading(true);
-    const { uri } = await resizePhoto(photo?.uri ?? "", [300, 300]);
-
-    const imgB64 = await FileSystem.readAsStringAsync(uri, {
-      encoding: FileSystem.EncodingType.Base64,
+  async function handlePredict(photoUri: string) {
+    setIsPredictLoading(true);
+    handlePredictPhoto(photoUri, model).then((value) => {
+      setPrediction(value);
+      setIsPredictLoading(false);
     });
-    const imgBuffer = tf.util.encodeString(imgB64, "base64").buffer;
-    const raw = new Uint8Array(imgBuffer);
-    const imagesTensor = decodeJpeg(raw, 3);
-
-    const processedTensor = tf.image.resizeBilinear(
-      imagesTensor,
-      [64, 64],
-      false,
-    );
-
-    const expandedTensor = tf.expandDims(processedTensor, 0);
-    const normalizedTensor = tf.div(expandedTensor, tf.scalar(255));
-
-    const prediction = (await model?.predict([
-      normalizedTensor,
-    ])) as tf.Tensor<tf.Rank>;
-
-    console.log(prediction.arraySync());
-    const result = await prediction.data();
-    console.log("Predict " + result.toString());
-
-    if (result[0] < 0.5) {
-      setPrediction("Hembra");
-    } else {
-      setPrediction("Macho");
-    }
-
-    tf.dispose([imagesTensor, processedTensor, expandedTensor, prediction]);
-    setisPredictLoading(false);
   }
 
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <View>
-          {prediction !== "Loading" ? (
+          {!isPredictLoading ? (
             <Text
               style={
                 prediction === "Hembra"
@@ -89,7 +48,7 @@ export const Prediction = ({ photo, setPhoto, model }: PredictionProps) => {
             <View style={styles.waitingContainer}>
               <ClockIcon
                 strokeWidth={3}
-                stroke="#A31621"
+                stroke="#FFF"
                 style={{ width: 40, height: 40, marginRight: 5 }}
               />
               <Text style={styles.textWaiting}>Cargando...</Text>
@@ -102,7 +61,6 @@ export const Prediction = ({ photo, setPhoto, model }: PredictionProps) => {
           source={{ uri: "data:image/jpg;base64," + photo?.base64 }}
           style={styles.image}
         />
-
         <View style={styles.buttonsContainer}>
           <Button
             color="CD5C5C"
@@ -111,7 +69,7 @@ export const Prediction = ({ photo, setPhoto, model }: PredictionProps) => {
           />
           <Button
             disabled={isPredictLoading}
-            handleFunction={handlePredict}
+            handleFunction={() => handlePredict(photo?.uri as string)}
             color="2E86C1"
             text="Predecir"
           />
@@ -139,7 +97,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   textWaiting: {
-    color: "#A31621",
+    color: "#FFF",
     fontWeight: "600",
     fontSize: 36,
     lineHeight: 40,

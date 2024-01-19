@@ -1,4 +1,5 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -8,6 +9,9 @@ import {
   ImageBackground,
 } from "react-native";
 
+import LoadingScreen from "./LoadingScreen";
+import ModelContext from "../utils/ModelContext";
+
 type RootStackParamList = {
   Manual: undefined;
   Options: undefined;
@@ -15,6 +19,19 @@ type RootStackParamList = {
 
 export default function HomeScreen() {
   const { navigate } = useNavigation<NavigationProp<RootStackParamList>>();
+  const model = useContext(ModelContext);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setIsLoading(true);
+    if (model) {
+      setIsLoading(false);
+    }
+  }, [model]);
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <View style={styles.container}>

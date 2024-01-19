@@ -1,42 +1,63 @@
-import * as tf from "@tensorflow/tfjs";
+import Slider from "@react-native-community/slider";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { Camera, CameraCapturedPicture } from "expo-camera";
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useRef, useState } from "react";
-import { View, Text, StyleSheet, Button } from "react-native";
+import { useContext, useEffect, useRef, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button,
+  PermissionsAndroid,
+  Platform,
+} from "react-native";
 
-import LoadingScreen from "../components/LoadingScreen";
-import { Prediction } from "../components/Prediction";
-import { loadModel } from "../utils/loadModel";
+import { Prediction, BackButton } from "../components";
+import ModelContext from "../utils/ModelContext";
+
+type RootStackParamList = {
+  Options: undefined;
+};
 
 export default function PredictonPhotoScreen() {
   const [photo, setPhoto] = useState<CameraCapturedPicture | undefined>();
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean>();
+  const [zoom, setZoom] = useState(0);
+  const { navigate } = useNavigation<NavigationProp<RootStackParamList>>();
 
   const cameraRef = useRef<Camera | null>(null);
-
-  const [model, setModel] = useState<tf.LayersModel>();
-  const [isLoading, setIsLoading] = useState(false);
+  const model = useContext(ModelContext);
 
   useEffect(() => {
-    loadInitialData();
     requestCameraPermission();
   }, []);
 
-  const loadInitialData = async () => {
-    setIsLoading(true);
-    try {
-      const loadedModel = await loadModel();
-      setModel(loadedModel);
-      setIsLoading(false);
-    } catch (error) {
-      console.error("Error loading model: ", error);
+  async function requestCameraPermission() {
+    if (Platform.OS === "android") {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.CAMERA,
+          {
+            title: "Permiso para usar la cámara",
+            message: "Esta aplicación necesita tu permiso para usar la cámara",
+            buttonNeutral: "Pregúntame luego",
+            buttonNegative: "Cancelar",
+            buttonPositive: "OK",
+          },
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log("Ahora tienes acceso a la cámara");
+        } else {
+          console.log("Permiso de cámara denegado");
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    } else {
+      const cameraPermission = await Camera.requestCameraPermissionsAsync();
+      setHasCameraPermission(cameraPermission.status === "granted");
     }
-  };
-
-  const requestCameraPermission = async () => {
-    const cameraPermission = await Camera.requestCameraPermissionsAsync();
-    setHasCameraPermission(cameraPermission.status === "granted");
-  };
+  }
 
   const takePic = async () => {
     const options = { quality: 1, base64: true, exif: false };
@@ -54,20 +75,42 @@ export default function PredictonPhotoScreen() {
     );
   }
 
-  if (isLoading) {
-    return <LoadingScreen />;
-  }
-
   if (photo) {
     return <Prediction photo={photo} setPhoto={setPhoto} model={model} />;
   }
 
   return (
-    <Camera ratio="20:10" style={styles.camera} ref={cameraRef}>
+    <Camera
+      autoFocus
+      zoom={zoom}
+      ratio="20:10"
+      style={styles.camera}
+      ref={cameraRef}
+    >
+      <BackButton
+        style={styles.backContainer}
+        onClick={() => navigate("Options")}
+      />
       <Text style={styles.text}>Centre la imágen en el cuadro</Text>
       <View style={styles.areaPhoto} />
+
+      <Slider
+        style={{
+          width: 300,
+          height: 40,
+          marginTop: 10,
+          position: "absolute",
+          bottom: 100,
+        }}
+        minimumValue={0}
+        maximumValue={1}
+        value={zoom}
+        onValueChange={setZoom}
+        minimumTrackTintColor="#FFFFFF"
+        maximumTrackTintColor="#000000"
+      />
       <View
-        style={{ backgroundColor: "#FFF", position: "absolute", bottom: 48 }}
+        style={{ backgroundColor: "#FFF", position: "absolute", bottom: 50 }}
       >
         <Button title="Tomar foto" onPress={takePic} />
       </View>
@@ -92,5 +135,16 @@ const styles = StyleSheet.create({
     fontSize: 20,
     lineHeight: 28,
   },
-  areaPhoto: { borderColor: "#000", width: 280, height: 280, borderWidth: 3 },
+  areaPhoto: {
+    borderColor: "#000",
+    width: 300,
+    height: 300,
+    borderWidth: 3,
+    paddingBottom: 60,
+  },
+  backContainer: {
+    top: 25,
+    width: "100%",
+    position: "absolute",
+  },
 });
