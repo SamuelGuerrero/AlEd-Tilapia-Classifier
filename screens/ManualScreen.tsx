@@ -1,5 +1,12 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { Dimensions, Image, ScrollView, StyleSheet, View } from "react-native";
+import {
+  Dimensions,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { ChevronLeftIcon } from "react-native-heroicons/outline";
 
 import { ListText } from "../components/ListText";
@@ -18,6 +25,7 @@ export default function ManualScreen() {
   const step1 = {
     title: "Preparar la captura",
     instuctions: [
+      "Selecciona la opción: Tomar foto 📷",
       "Encuentra un entorno bien iluminado para garantizar una captura clara ☀️",
       "Coloca la Tilapia de manera que las papilas genitales estén visibles 👁️",
       "Coloca la cámara de tu dispositivo móvil a una distancia de 10 cm aproximadamente de la papila genital 📏",
@@ -28,7 +36,72 @@ export default function ManualScreen() {
     title: "Enfoca la cámara",
     instuctions: [
       "Asegúrate de que la cámara esté enfocada en la papila genital y que ésta se encuentre en medio del recuadro negro ✅",
+      "Puedes configurar el zoom de la cámara con el deslizador ubicado debajo del recuadro negro 🔎",
       "Toma la fotografía 📷",
+    ],
+  };
+
+  const step3 = {
+    title: "Predice el valor",
+    instuctions: [
+      <ListText>
+        Una vez capturada la imágen, presiona el botón{" "}
+        <Text style={{ fontWeight: "700", color: "#2E86C1" }}>Predecir</Text>{" "}
+        para obtener el sexo de la tilapia en base a la imagen tomada 🐟
+      </ListText>,
+      <ListText>
+        En caso contrario presiona{" "}
+        <Text style={{ fontWeight: "700", color: "#CD5C5C" }}>Cancelar</Text>{" "}
+        para cancelar la operación 📵
+      </ListText>,
+
+      <ListText>
+        Al Predecir la foto tomada, se desplegará el sexo del pez con color{" "}
+        <Text style={{ fontWeight: "700", color: "#CD5C5C" }}>Rosa</Text> para
+        Hembra y color{" "}
+        <Text style={{ fontWeight: "700", color: "#2E86C1" }}>Azul</Text> para
+        Macho como se ve en la siguiente imagen 🏷️
+      </ListText>,
+    ],
+  };
+
+  const stepFile1 = {
+    title: "Carga las imágenes",
+    instuctions: [
+      <ListText>Selecciona la opción: Cargar archivos 📁</ListText>,
+
+      <ListText>
+        Presiona el botón{" "}
+        <View style={{ backgroundColor: "#FFF", padding: 1 }}>
+          <Text style={{ color: "#000" }}>Cargar imágenes</Text>
+        </View>{" "}
+        🌆
+      </ListText>,
+      <ListText>
+        Selecciona las imágenes que deseas predecir desde tu galería y
+        recortalas según el área de interés ✂️
+      </ListText>,
+    ],
+  };
+
+  const stepFile2 = {
+    title: "Termina de cargar las imágenes",
+    instuctions: [
+      "Una vez cargadas y recortadas las imágenes, presiona Cancelar para ver los resultados en la parte inferior de la imagen cargada como se ve en la siguiente imagen ✅",
+    ],
+  };
+
+  const stepFile3 = {
+    title: "Vuelve a cargar nuevas imágenes 🔙",
+    instuctions: [
+      <ListText>
+        Una vez terminada la predicción de las imágenes cargadas, presiona el
+        botón{" "}
+        <View style={{ backgroundColor: "#FFF", padding: 1 }}>
+          <Text style={{ color: "#000" }}>Borrar imágenes</Text>
+        </View>
+        para predecir de vuelta 🗑️
+      </ListText>,
     ],
   };
 
@@ -37,7 +110,6 @@ export default function ManualScreen() {
       <View style={styles.header}>
         <ChevronLeftIcon
           onPress={() => navigate("Home")}
-          style={{}}
           strokeWidth={2}
           size={40}
         />
@@ -51,8 +123,11 @@ export default function ManualScreen() {
           source={require("../assets/AlEdT.png")}
         />
       </View>
+
       <View style={styles.manual}>
+        <Text style={styles.manualTitle}>📸 Predicción por cámara</Text>
         <View>
+          {/* 1 */}
           <View style={styles.cardOption}>
             <ManualItemTitle title={step1.title} itemNumber={1} />
             <View style={styles.listSection}>
@@ -62,6 +137,7 @@ export default function ManualScreen() {
             </View>
           </View>
 
+          {/* 2 */}
           <View style={styles.cardOption}>
             <ManualItemTitle title={step2.title} itemNumber={2} />
             <View style={styles.listSection}>
@@ -70,18 +146,68 @@ export default function ManualScreen() {
               ))}
             </View>
 
+            {/* 3 */}
             <View style={styles.warningCard}>
               <ListText style={{ paddingRight: 40 }} textColor="#000">
                 Asegurate de que la papila genital esté perfectamente enfocada
-                como se muestra en la siguiente imágen.
+                en el recuadro negro como se muestra en la siguiente imágen.
               </ListText>
               <View style={styles.exampleContainer}>
                 <Image
                   resizeMode="contain"
                   style={[styles.example, { width: calculatedWidth }]}
-                  source={require("../assets/Example1.jpg")}
+                  source={require("../assets/Example1.jpeg")}
                 />
               </View>
+            </View>
+          </View>
+
+          {/* 4 */}
+          <View style={styles.cardOption}>
+            <ManualItemTitle title={step3.title} itemNumber={3} />
+            <View style={styles.listSection}>
+              {step3.instuctions.map((rule) => rule)}
+            </View>
+            <View style={styles.exampleContainer}>
+              <Image
+                resizeMode="contain"
+                style={[styles.example, { width: calculatedWidth }]}
+                source={require("../assets/Example2.jpeg")}
+              />
+            </View>
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.manual}>
+        <Text style={styles.manualTitle}>
+          📁 Predicción por carga de imágenes
+        </Text>
+        <View>
+          <View style={styles.cardOption}>
+            <ManualItemTitle title={stepFile1.title} itemNumber={1} />
+            <View style={styles.listSection}>
+              {stepFile1.instuctions.map((rule, index) => rule)}
+            </View>
+          </View>
+        </View>
+
+        <View>
+          <View style={styles.cardOption}>
+            <ManualItemTitle title={stepFile2.title} itemNumber={2} />
+            <View style={styles.listSection}>
+              {stepFile2.instuctions.map((rule, index) => (
+                <ListText key={index}>{rule}</ListText>
+              ))}
+            </View>
+          </View>
+        </View>
+
+        <View>
+          <View style={styles.cardOption}>
+            <ManualItemTitle title={stepFile3.title} itemNumber={3} />
+            <View style={styles.listSection}>
+              {stepFile3.instuctions.map((rule, index) => rule)}
             </View>
           </View>
         </View>
@@ -130,6 +256,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingLeft: 20,
     paddingRight: 20,
+    marginBottom: 50,
   },
   letterListItem: {
     color: "#FFF",
@@ -138,5 +265,10 @@ const styles = StyleSheet.create({
   listSection: {
     width: "85%",
     marginTop: 20,
+  },
+  manualTitle: {
+    color: "#FFF",
+    fontSize: 26,
+    fontWeight: "800",
   },
 });
