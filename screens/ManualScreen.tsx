@@ -1,4 +1,5 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { cloneElement } from "react";
 import {
   Dimensions,
   Image,
@@ -166,7 +167,9 @@ export default function ManualScreen() {
           <View style={styles.cardOption}>
             <ManualItemTitle title={step3.title} itemNumber={3} />
             <View style={styles.listSection}>
-              {step3.instuctions.map((rule) => rule)}
+              {step3.instuctions.map((rule, index) =>
+                cloneElement(rule, { key: index }),
+              )}
             </View>
             <View style={styles.exampleContainer}>
               <Image
@@ -187,7 +190,9 @@ export default function ManualScreen() {
           <View style={styles.cardOption}>
             <ManualItemTitle title={stepFile1.title} itemNumber={1} />
             <View style={styles.listSection}>
-              {stepFile1.instuctions.map((rule, index) => rule)}
+              {stepFile1.instuctions.map((rule, index) =>
+                cloneElement(rule, { key: index }),
+              )}
             </View>
           </View>
         </View>
@@ -207,7 +212,9 @@ export default function ManualScreen() {
           <View style={styles.cardOption}>
             <ManualItemTitle title={stepFile3.title} itemNumber={3} />
             <View style={styles.listSection}>
-              {stepFile3.instuctions.map((rule, index) => rule)}
+              {stepFile3.instuctions.map((rule, index) =>
+                cloneElement(rule, { key: index }),
+              )}
             </View>
           </View>
         </View>
