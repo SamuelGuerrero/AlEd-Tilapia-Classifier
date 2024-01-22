@@ -1,6 +1,7 @@
 import Slider from "@react-native-community/slider";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { Camera, CameraCapturedPicture } from "expo-camera";
+import { SaveFormat, manipulateAsync } from "expo-image-manipulator";
 import { StatusBar } from "expo-status-bar";
 import { useContext, useEffect, useRef, useState } from "react";
 import {
@@ -10,6 +11,7 @@ import {
   Button,
   PermissionsAndroid,
   Platform,
+  Dimensions,
 } from "react-native";
 
 import { Prediction, BackButton } from "../components";
@@ -63,7 +65,24 @@ export default function PredictonPhotoScreen() {
   const takePic = async () => {
     const options = { quality: 1, base64: true, exif: false };
     const newPhoto = await cameraRef.current?.takePictureAsync(options);
-    setPhoto(newPhoto);
+
+    if (!newPhoto) return;
+    const manipResult = await manipulateAsync(
+      newPhoto?.uri as string,
+      [
+        {
+          crop: {
+            width: newPhoto?.width,
+            height: newPhoto?.width,
+            originX: 0,
+            originY: (newPhoto.height - newPhoto.width) / 2,
+          },
+        },
+      ],
+      { compress: 1, format: SaveFormat.PNG },
+    );
+
+    setPhoto(manipResult);
   };
 
   if (hasCameraPermission === undefined) {
@@ -80,6 +99,10 @@ export default function PredictonPhotoScreen() {
     return <Prediction photo={photo} setPhoto={setPhoto} model={model} />;
   }
 
+  const widthMobile = Dimensions.get("window").width;
+  const heightMobile = Dimensions.get("window").height;
+  const topPhoto = (heightMobile - widthMobile) / 2;
+
   return (
     <Camera
       autoFocus
@@ -92,8 +115,12 @@ export default function PredictonPhotoScreen() {
         style={styles.backContainer}
         onClick={() => navigate("Options")}
       />
-      <Text style={styles.text}>Centre la imágen en el cuadro</Text>
-      <View style={styles.areaPhoto} />
+      <View
+        style={[
+          styles.areaPhoto,
+          { top: topPhoto, width: widthMobile, height: widthMobile },
+        ]}
+      />
 
       <Slider
         style={{
@@ -137,9 +164,11 @@ const styles = StyleSheet.create({
     lineHeight: 28,
   },
   areaPhoto: {
+    top: 0,
+    position: "absolute",
     borderColor: "#000",
-    width: 300,
-    height: 300,
+    width: 375,
+    height: 375,
     borderWidth: 3,
     paddingBottom: 60,
   },
