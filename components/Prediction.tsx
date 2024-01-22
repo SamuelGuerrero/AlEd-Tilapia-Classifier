@@ -1,11 +1,19 @@
 import * as tf from "@tensorflow/tfjs";
 import { CameraCapturedPicture } from "expo-camera";
 import { Dispatch, SetStateAction, useRef, useState } from "react";
-import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import {
+  Dimensions,
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { ClockIcon } from "react-native-heroicons/outline";
 
 import { Button } from "./Button";
-import { handlePredictPhoto } from "../utils/predict";
+import { PorcentageBar } from "./PorcentageBar";
+import { PredictionResult, handlePredictPhoto } from "../utils/predict";
 
 type PredictionProps = {
   photo: CameraCapturedPicture | undefined;
@@ -14,7 +22,7 @@ type PredictionProps = {
 };
 
 export const Prediction = ({ photo, setPhoto, model }: PredictionProps) => {
-  const [prediction, setPrediction] = useState<"Hembra" | "Macho">();
+  const [prediction, setPrediction] = useState<PredictionResult>();
   const imageRef = useRef<Image | null>(null);
   const [isPredictLoading, setIsPredictLoading] = useState<boolean>(false);
 
@@ -29,21 +37,32 @@ export const Prediction = ({ photo, setPhoto, model }: PredictionProps) => {
       setIsPredictLoading(false);
     });
   }
+  const sizePhoto = Dimensions.get("window").width;
 
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-        <View>
+        <View
+          style={{
+            width: sizePhoto,
+            height: 80,
+            alignItems: "center",
+          }}
+        >
           {!isPredictLoading ? (
-            <Text
-              style={
-                prediction === "Hembra"
-                  ? styles.textPredictionHembra
-                  : styles.textPredictionMacho
-              }
-            >
-              {prediction}
-            </Text>
+            <View>
+              <Text
+                style={
+                  prediction?.gender === "Hembra"
+                    ? styles.textPredictionHembra
+                    : styles.textPredictionMacho
+                }
+              >
+                {prediction?.gender}
+              </Text>
+
+              {PorcentageBar(prediction?.result)}
+            </View>
           ) : (
             <View style={styles.waitingContainer}>
               <ClockIcon
@@ -58,8 +77,13 @@ export const Prediction = ({ photo, setPhoto, model }: PredictionProps) => {
 
         <Image
           ref={imageRef}
-          source={{ uri: "data:image/jpg;base64," + photo?.base64 }}
-          style={styles.image}
+          source={{ uri: photo?.uri }}
+          style={{
+            width: sizePhoto,
+            height: sizePhoto,
+            marginTop: 5,
+            marginBottom: 40,
+          }}
         />
         <View style={styles.buttonsContainer}>
           <Button
@@ -113,16 +137,14 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: 36,
     lineHeight: 40,
+    textAlign: "center",
   },
   textPredictionMacho: {
     color: "#2E86C1",
     fontWeight: "600",
     fontSize: 36,
     lineHeight: 40,
-  },
-  image: {
-    width: 288,
-    height: 288,
+    textAlign: "center",
   },
   buttonsContainer: {
     width: "100%",

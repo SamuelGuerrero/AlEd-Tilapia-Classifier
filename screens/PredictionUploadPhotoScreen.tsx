@@ -11,13 +11,13 @@ import {
 } from "react-native";
 import { ClockIcon } from "react-native-heroicons/outline";
 
-import { BackButton } from "../components";
+import { BackButton, PorcentageBar } from "../components";
 import ModelContext from "../utils/ModelContext";
-import { handlePredictPhoto } from "../utils/predict";
+import { PredictionResult, handlePredictPhoto } from "../utils/predict";
 
 export default function PredictionUploadPhotoScreen() {
   const [images, setImages] = useState<string[]>([]);
-  const [predictions, setPredictions] = useState<string[]>([]);
+  const [predictions, setPredictions] = useState<PredictionResult[]>([]);
   const model = useContext(ModelContext);
 
   type RootStackParamList = {
@@ -45,7 +45,7 @@ export default function PredictionUploadPhotoScreen() {
       const newPredictions = await Promise.all(
         images.map(async (image) => {
           return await handlePredictPhoto(image, model);
-        })
+        }),
       );
 
       setPredictions(newPredictions);
@@ -82,15 +82,18 @@ export default function PredictionUploadPhotoScreen() {
             <Image source={{ uri: image }} style={styles.image} />
 
             {predictions[index] ? (
-              <Text
-                style={
-                  predictions[index] === "Hembra"
-                    ? styles.textPredictionHembra
-                    : styles.textPredictionMacho
-                }
-              >
-                {predictions[index]}
-              </Text>
+              <View>
+                <Text
+                  style={
+                    predictions[index].gender === "Hembra"
+                      ? styles.textPredictionHembra
+                      : styles.textPredictionMacho
+                  }
+                >
+                  {predictions[index].gender}
+                </Text>
+                {PorcentageBar(predictions[index].result)}
+              </View>
             ) : (
               <View style={styles.waitingContainer}>
                 <ClockIcon
@@ -116,8 +119,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
   },
   image: {
-    width: 300,
-    height: 300,
+    width: 375,
+    height: 375,
     borderRadius: 10,
   },
   textPredictionHembra: {
@@ -125,17 +128,19 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: 36,
     lineHeight: 40,
+    textAlign: "center",
   },
   textPredictionMacho: {
     color: "#2E86C1",
     fontWeight: "600",
     fontSize: 36,
     lineHeight: 40,
+    textAlign: "center",
   },
   card: {
     marginTop: 30,
     width: 320,
-    height: 350,
+    height: 460,
     backgroundColor: "#1C1C1D",
     borderRadius: 12,
     display: "flex",

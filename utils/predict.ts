@@ -3,6 +3,11 @@ import { decodeJpeg } from "@tensorflow/tfjs-react-native";
 import * as FileSystem from "expo-file-system";
 import * as ImageManipulator from "expo-image-manipulator";
 
+export interface PredictionResult {
+  gender: string;
+  result: number;
+}
+
 const resizePhoto = async (uri: string, size: number[]) => {
   const actions = [{ resize: { width: size[0], height: size[1] } }];
   const saveOptions = {
@@ -15,7 +20,7 @@ const resizePhoto = async (uri: string, size: number[]) => {
 export async function handlePredictPhoto(
   photoUri: string,
   model: tf.LayersModel | undefined,
-) {
+): Promise<PredictionResult> {
   const { uri } = await resizePhoto(photoUri ?? "", [300, 300]);
 
   const imgB64 = await FileSystem.readAsStringAsync(uri, {
@@ -43,9 +48,7 @@ export async function handlePredictPhoto(
 
   tf.dispose([imagesTensor, processedTensor, expandedTensor, prediction]);
 
-  if (result[0] < 0.5) {
-    return "Hembra";
-  } else {
-    return "Macho";
-  }
+  const gender = result[0] < 0.5 ? "Hembra" : "Macho";
+
+  return { gender, result: result[0] };
 }
