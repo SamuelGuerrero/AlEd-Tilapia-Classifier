@@ -2,6 +2,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as tf from "@tensorflow/tfjs";
 import { useEffect, useMemo, useState } from "react";
+import { StatusBar } from "react-native";
+import NavigationBarColor from "react-native-navigation-bar-color";
 
 import HomePage from "./screens/HomeScreen";
 import ManualScreen from "./screens/ManualScreen";
@@ -12,6 +14,8 @@ import ModelContext from "./utils/ModelContext";
 import { loadModel } from "./utils/loadModel";
 
 const Stack = createNativeStackNavigator();
+StatusBar.setHidden(true);
+NavigationBarColor("#000000");
 
 export default function App() {
   const [model, setModel] = useState<tf.LayersModel>();
