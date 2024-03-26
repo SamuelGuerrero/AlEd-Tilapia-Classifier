@@ -79,8 +79,8 @@ export const Prediction = ({ photo, setPhoto, model }: PredictionProps) => {
           ref={imageRef}
           source={{ uri: photo?.uri }}
           style={{
-            width: sizePhoto,
-            height: sizePhoto,
+            width: 350,
+            height: 350,
             marginTop: 5,
             marginBottom: 40,
           }}

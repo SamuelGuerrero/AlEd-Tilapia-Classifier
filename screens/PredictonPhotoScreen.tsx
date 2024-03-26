@@ -24,6 +24,7 @@ type RootStackParamList = {
 export default function PredictonPhotoScreen() {
   const [photo, setPhoto] = useState<CameraCapturedPicture | undefined>();
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean>();
+  const [isLoading, setIsLoading] = useState<boolean>();
   const [zoom, setZoom] = useState(0);
   const { navigate } = useNavigation<NavigationProp<RootStackParamList>>();
 
@@ -63,6 +64,7 @@ export default function PredictonPhotoScreen() {
   }
 
   const takePic = async () => {
+    setIsLoading(true);
     const options = { quality: 1, base64: true, exif: false };
     const newPhoto = await cameraRef.current?.takePictureAsync(options);
 
@@ -72,10 +74,10 @@ export default function PredictonPhotoScreen() {
       [
         {
           crop: {
-            width: newPhoto?.width,
-            height: newPhoto?.width,
-            originX: 0,
-            originY: (newPhoto.height - newPhoto.width) / 2,
+            width: 2200,
+            height: 2200,
+            originX: (newPhoto?.width - 2200) / 2,
+            originY: (newPhoto.height - 2200) / 2,
           },
         },
       ],
@@ -83,15 +85,38 @@ export default function PredictonPhotoScreen() {
     );
 
     setPhoto(manipResult);
+    setIsLoading(false);
   };
 
   if (hasCameraPermission === undefined) {
-    return <Text className->Requesting permissions...</Text>;
+    return (
+      <View
+        style={{
+          backgroundColor: "#000",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Text style={{ fontSize: 20, fontWeight: "600" }}>
+          Requesting permissions...
+        </Text>
+      </View>
+    );
   } else if (!hasCameraPermission) {
     return (
-      <Text>
-        Permission for camera not granted. Please change this in settings.
-      </Text>
+      <View
+        style={{
+          backgroundColor: "#000",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Text style={{ fontSize: 20, fontWeight: "600" }}>
+          Permission for camera not granted. Please change this in settings.
+        </Text>
+      </View>
     );
   }
 
@@ -99,9 +124,10 @@ export default function PredictonPhotoScreen() {
     return <Prediction photo={photo} setPhoto={setPhoto} model={model} />;
   }
 
-  const widthMobile = Dimensions.get("window").width;
-  const heightMobile = Dimensions.get("window").height;
-  const topPhoto = (heightMobile - widthMobile) / 2;
+  const widthSquare = 350;
+  const heightSquare = 350;
+  const topPhoto = (Dimensions.get("window").height - heightSquare) / 2;
+  const leftPhoto = (Dimensions.get("window").width - widthSquare) / 2;
 
   return (
     <Camera
@@ -118,7 +144,12 @@ export default function PredictonPhotoScreen() {
       <View
         style={[
           styles.areaPhoto,
-          { top: topPhoto, width: widthMobile, height: widthMobile },
+          {
+            top: topPhoto,
+            left: leftPhoto,
+            width: widthSquare,
+            height: heightSquare,
+          },
         ]}
       />
 
@@ -140,7 +171,11 @@ export default function PredictonPhotoScreen() {
       <View
         style={{ backgroundColor: "#FFF", position: "absolute", bottom: 50 }}
       >
-        <Button title="Tomar foto" onPress={takePic} />
+        <Button
+          disabled={isLoading}
+          title={`${isLoading ? "Capturando imagen..." : "Tomar foto"}`}
+          onPress={takePic}
+        />
       </View>
       <StatusBar style="auto" />
     </Camera>
