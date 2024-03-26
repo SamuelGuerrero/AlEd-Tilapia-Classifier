@@ -41,17 +41,17 @@ export default function PredictionUploadPhotoScreen() {
   };
 
   useEffect(() => {
-    const predictImages = async () => {
-      const newPredictions = await Promise.all(
-        images.map(async (image) => {
-          return await handlePredictPhoto(image, model);
-        }),
+    const predictImage = async () => {
+      const newPrediction = await handlePredictPhoto(
+        images[images.length - 1],
+        model,
       );
-
-      setPredictions(newPredictions);
+      setPredictions((prevPredictions) => [...prevPredictions, newPrediction]);
     };
 
-    predictImages();
+    if (images.length > 0) {
+      predictImage();
+    }
   }, [images]);
 
   const resetImages = () => {
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     backgroundColor: "#FFF",
-    marginTop: 80,
+    marginTop: 40,
     width: 160,
     alignSelf: "center",
   },
