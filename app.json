@@ -2,7 +2,7 @@
   "expo": {
     "name": "AlEd",
     "slug": "aled",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/AlEdIcon.jpeg",
     "userInterfaceStyle": "light",
@@ -25,7 +25,9 @@
         }
       ]
     ],
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.toprak44kmpl.aled"
@@ -39,7 +41,8 @@
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
       ],
-      "package": "com.toprak44kmpl.aled"
+      "package": "com.toprak44kmpl.aled",
+      "versionCode": 2
     },
     "web": {
       "favicon": "./assets/favicon.png"
