@@ -26,6 +26,7 @@ export default function PredictonPhotoScreen() {
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean>();
   const [isLoading, setIsLoading] = useState<boolean>();
   const [zoom, setZoom] = useState(0);
+  const [error, setError] = useState<boolean>(false);
   const { navigate } = useNavigation<NavigationProp<RootStackParamList>>();
 
   const cameraRef = useRef<Camera | null>(null);
@@ -69,6 +70,10 @@ export default function PredictonPhotoScreen() {
     const newPhoto = await cameraRef.current?.takePictureAsync(options);
 
     if (!newPhoto) return;
+    if (newPhoto.width < 2200 && newPhoto.height < 2200) {
+      setError(true);
+      return;
+    }
     const manipResult = await manipulateAsync(
       newPhoto?.uri as string,
       [
@@ -87,6 +92,34 @@ export default function PredictonPhotoScreen() {
     setPhoto(manipResult);
     setIsLoading(false);
   };
+
+  if (error) {
+    return (
+      <View
+        style={{
+          backgroundColor: "#000",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100%",
+        }}
+      >
+        <Text style={styles.text}>
+          Hubo un error al capturar la imagen. Por favor, verifica que tienes
+          los permisos necesarios para usar la cámara y que la imagen existe.
+        </Text>
+        <View style={{ marginTop: 150, backgroundColor: "#FFF" }}>
+          <Button
+            title="Intentar de nuevo"
+            onPress={() => {
+              // eslint-disable-next-line no-unused-expressions, no-sequences
+              setError(false), setPhoto(undefined), setIsLoading(false);
+            }}
+          />
+        </View>
+      </View>
+    );
+  }
 
   if (hasCameraPermission === undefined) {
     return (

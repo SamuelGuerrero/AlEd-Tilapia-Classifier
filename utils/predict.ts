@@ -9,6 +9,12 @@ export interface PredictionResult {
 }
 
 const resizePhoto = async (uri: string, size: number[]) => {
+  const fileInfo = await FileSystem.getInfoAsync(uri);
+  if (!fileInfo.exists) {
+    console.log("El archivo no existe");
+    return { uri: "" };
+  }
+
   const actions = [{ resize: { width: size[0], height: size[1] } }];
   const saveOptions = {
     base64: true,
@@ -22,6 +28,11 @@ export async function handlePredictPhoto(
   model: tf.LayersModel | undefined,
 ): Promise<PredictionResult> {
   const { uri } = await resizePhoto(photoUri ?? "", [300, 300]);
+  console.log("Uri", photoUri);
+  if (uri.length === 0) {
+    console.log("La imagen no existe");
+    return { gender: "Error", result: -1 };
+  }
 
   const imgB64 = await FileSystem.readAsStringAsync(uri, {
     encoding: FileSystem.EncodingType.Base64,

@@ -38,6 +38,16 @@ export const Prediction = ({ photo, setPhoto, model }: PredictionProps) => {
     });
   }
   const sizePhoto = Dimensions.get("window").width;
+  if (prediction?.gender === "Error") {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.textWaiting}>
+          Hubo un error al capturar la imagen. Por favor, verifica que tienes
+          los permisos necesarios para usar la cámara y que la imagen existe.
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
