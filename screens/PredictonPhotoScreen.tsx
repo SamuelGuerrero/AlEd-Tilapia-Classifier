@@ -65,32 +65,32 @@ export default function PredictonPhotoScreen() {
   }
 
   const takePic = async () => {
-    setIsLoading(true);
-    const options = { quality: 1, base64: true, exif: false };
-    const newPhoto = await cameraRef.current?.takePictureAsync(options);
+    try {
+      setIsLoading(true);
+      const options = { quality: 1, base64: true, exif: false };
+      const newPhoto = await cameraRef.current?.takePictureAsync(options);
 
-    if (!newPhoto) return;
-    if (newPhoto.width < 2200 && newPhoto.height < 2200) {
-      setError(true);
-      return;
-    }
-    const manipResult = await manipulateAsync(
-      newPhoto?.uri as string,
-      [
-        {
-          crop: {
-            width: 2200,
-            height: 2200,
-            originX: (newPhoto?.width - 2200) / 2,
-            originY: (newPhoto.height - 2200) / 2,
+      if (!newPhoto) return;
+      const manipResult = await manipulateAsync(
+        newPhoto?.uri as string,
+        [
+          {
+            crop: {
+              width: 2200,
+              height: 2200,
+              originX: (newPhoto?.width - 2200) / 2,
+              originY: (newPhoto.height - 2200) / 2,
+            },
           },
-        },
-      ],
-      { compress: 1, format: SaveFormat.PNG },
-    );
+        ],
+        { compress: 1, format: SaveFormat.PNG },
+      );
 
-    setPhoto(manipResult);
-    setIsLoading(false);
+      setPhoto(manipResult);
+      setIsLoading(false);
+    } catch {
+      setError(true);
+    }
   };
 
   if (error) {
