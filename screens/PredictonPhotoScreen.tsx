@@ -108,7 +108,16 @@ export default function PredictonPhotoScreen() {
           Hubo un error al capturar la imagen. Por favor, verifica que tienes
           los permisos necesarios para usar la cámara y que la imagen existe.
         </Text>
-        <View style={{ marginTop: 150, backgroundColor: "#FFF" }}>
+        <View
+          style={{
+            marginTop: 150,
+            backgroundColor: "#FFF",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: 50,
+          }}
+        >
           <Button
             title="Intentar de nuevo"
             onPress={() => {
@@ -199,10 +208,18 @@ export default function PredictonPhotoScreen() {
         value={zoom}
         onValueChange={setZoom}
         minimumTrackTintColor="#FFFFFF"
-        maximumTrackTintColor="#000000"
+        maximumTrackTintColor="#7d8597"
       />
       <View
-        style={{ backgroundColor: "#FFF", position: "absolute", bottom: 50 }}
+        style={{
+          height: 50,
+          backgroundColor: "#FFF",
+          position: "absolute",
+          bottom: 35,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
       >
         <Button
           disabled={isLoading}
