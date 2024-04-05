@@ -71,15 +71,21 @@ export default function PredictonPhotoScreen() {
       const newPhoto = await cameraRef.current?.takePictureAsync(options);
 
       if (!newPhoto) return;
+
+      const cropWidth = 2200;
+      const cropHeight = 2200;
+      const originX = Math.max(0, (newPhoto.width - cropWidth) / 2);
+      const originY = Math.max(0, (newPhoto.height - cropHeight) / 2);
+
       const manipResult = await manipulateAsync(
         newPhoto?.uri as string,
         [
           {
             crop: {
-              width: 2200,
-              height: 2200,
-              originX: (newPhoto?.width - 2200) / 2,
-              originY: (newPhoto.height - 2200) / 2,
+              width: cropWidth,
+              height: cropHeight,
+              originX,
+              originY,
             },
           },
         ],
@@ -88,10 +94,12 @@ export default function PredictonPhotoScreen() {
 
       setPhoto(manipResult);
       setIsLoading(false);
-    } catch {
+    } catch (error) {
+      console.error("Error al tomar la foto:", error);
       setError(true);
     }
   };
+
 
   if (error) {
     return (
