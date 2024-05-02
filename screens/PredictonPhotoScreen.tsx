@@ -100,7 +100,6 @@ export default function PredictonPhotoScreen() {
     }
   };
 
-
   if (error) {
     return (
       <View
